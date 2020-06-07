@@ -4,8 +4,8 @@ var map = document.querySelector('.map');
 var numberOfPins = 8;
 
 var pin = {
-  title: 'Новый дом',
-  address: [600, 350],
+  title: ['Одноэтажный дом', 'Высотка', 'Многоэтажный дом', 'Котедж'],
+  address: '600, 350',
   price: {
     min: 1000,
     max: 50000
@@ -25,8 +25,8 @@ var pin = {
   description: '',
   photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
   x: {
-    min: 30,
-    max: 1170
+    min: 50,
+    max: 1150
   },
   y: {
     min: 130,
@@ -34,16 +34,28 @@ var pin = {
   }
 };
 
-console.log(pin.x.min);
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
-// Случайное число
-var mapPin = document.querySelector('.map__pin');
-var getRandomInt = function (min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
+var getRandomIntInclusive = function (min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var getRandomStringElement = function (array) {
+  return array[getRandomIntInclusive(0, array.length - 1)];
+};
+
+var getRandomLengthArray = function (array) {
+  var newArray = [];
+  for (var i = 0; i < getRandomIntInclusive(0, 10); i++) {
+    var newElement = getRandomStringElement(array);
+    newArray.push(newElement);
+  }
+  return newArray;
 };
 
 var getPinsArray = function () {
@@ -54,25 +66,37 @@ var getPinsArray = function () {
         avatar: 'img/avatars/user' + 0 + i + '.png'
       },
       offer: {
-        title: pin.title,
-        address: pin.address
+        title: getRandomStringElement(pin.title),
+        address: pin.address,
+        price: getRandomIntInclusive(pin.price.min, pin.price.max),
+        type: getRandomStringElement(pin.type),
+        rooms: getRandomIntInclusive(pin.rooms.min, pin.rooms.max),
+        guests: getRandomIntInclusive(pin.guests.min, pin.guests.max),
+        checkin: getRandomStringElement(pin.checkin),
+        checkout: getRandomStringElement(pin.checkout),
+        features: getRandomStringElement(pin.features),
+        description: pin.description,
+        photos: getRandomLengthArray(pin.photos)
+      },
+      location: {
+        x: getRandomIntInclusive(pin.x.min, pin.x.max),
+        y: getRandomIntInclusive(pin.y.min, pin.y.max)
       }
-    }
+    };
     pinsArray.push(randomPins);
   }
   return pinsArray;
 };
 var pinsArray = getPinsArray();
-console.log(pinsArray);
 
-var renderPin = function (pinsArray) {
+var renderPin = function (array) {
 
   var pinElement = pinTemplate.cloneNode(true);
 
-  pinElement.querySelector('img').scr = pinsArray.author.avatar;
-  pinElement.querySelector('img').alt = pinsArray.offer.title;
-  // pinElement.style.left = x + 'px';
-  // pinElement.style.top = y + 'px';
+  pinElement.querySelector('img').src = array.author.avatar;
+  pinElement.querySelector('img').alt = array.offer.title;
+  pinElement.style.left = array.location.x + 'px';
+  pinElement.style.top = array.location.y + 'px';
 
   return pinElement;
 };
