@@ -4,7 +4,7 @@ var map = document.querySelector('.map');
 var numberOfPins = 8;
 
 var pin = {
-  title: '',
+  title: 'Новый дом',
   address: [600, 350],
   price: {
     min: 1000,
@@ -33,42 +33,53 @@ var pin = {
     max: 630
   }
 };
+
+console.log(pin.x.min);
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
 // Случайное число
-
+var mapPin = document.querySelector('.map__pin');
 var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-var randomPins = function () {
-  for (var i = 0; i < numberOfPins; i++) {
-    var pin = {
+var getPinsArray = function () {
+  var pinsArray = [];
+  for (var i = 1; i < numberOfPins + 1; i++) {
+    var randomPins = {
       author: {
         avatar: 'img/avatars/user' + 0 + i + '.png'
+      },
+      offer: {
+        title: pin.title,
+        address: pin.address
       }
     }
+    pinsArray.push(randomPins);
   }
-  return pin;
+  return pinsArray;
 };
+var pinsArray = getPinsArray();
+console.log(pinsArray);
 
-var renderPin = function (avatar, tittle, x, y) {
+var renderPin = function (pinsArray) {
+
   var pinElement = pinTemplate.cloneNode(true);
 
-  pinElement.querySelector('img').scr = avatar;
-  pinElement.querySelector('img').alt = tittle;
-  pinElement.querySelector('img').style.fill = 'left: ' + x + 'px';
-  pinElement.querySelector('img').style.fill = 'top: ' + y + 'px';
+  pinElement.querySelector('img').scr = pinsArray.author.avatar;
+  pinElement.querySelector('img').alt = pinsArray.offer.title;
+  // pinElement.style.left = x + 'px';
+  // pinElement.style.top = y + 'px';
 
   return pinElement;
 };
 
 var fragment = document.createDocumentFragment();
 for (var i = 0; i < numberOfPins; i++) {
-  fragment.appendChild(renderPin(pin.avatar, pin.title, pin.x.min, pin.y.min));
+  fragment.appendChild(renderPin(pinsArray[i]));
 }
 
 mapPins.appendChild(fragment);
