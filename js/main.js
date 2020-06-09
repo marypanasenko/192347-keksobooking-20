@@ -82,16 +82,20 @@ var getOfferType = function (array) {
   return value;
 };
 
-var getPinsArray = function () {
+var getLocation = function (arrayXMin, arrayYMax) {
+  return getRandomIntInclusive(arrayXMin, arrayYMax);
+};
+
+var getPinArray = function (numberOfPins) {
   var pinsArray = [];
-  for (var i = 1; i < NUMBER_OF_PINS + 1; i++) {
+  for (var i = 1; i < numberOfPins + 1; i++) {
     var randomPins = {
       author: {
         avatar: 'img/avatars/user' + 0 + i + '.png'
       },
       offer: {
         title: getRandomStringElement(pin.title),
-        address: pin.address,
+        address: pin.address = [getLocation(pin.x.min, pin.x.max), getLocation(pin.x.min, pin.x.max)],
         price: getRandomIntInclusive(pin.price.min, pin.price.max),
         type: getRandomStringElement(pin.type),
         rooms: getRandomIntInclusive(pin.rooms.min, pin.rooms.max),
@@ -103,15 +107,15 @@ var getPinsArray = function () {
         photos: shuffleArray(pin.photos.slice(0, getRandomIntInclusive(1, pin.photos.length))),
       },
       location: {
-        x: getRandomIntInclusive(pin.x.min, pin.x.max),
-        y: getRandomIntInclusive(pin.y.min, pin.y.max)
+        x: getLocation(pin.x.min, pin.x.max),
+        y: getLocation(pin.y.min, pin.y.max)
       }
     };
     pinsArray.push(randomPins);
   }
   return pinsArray;
 };
-var pinsArray = getPinsArray();
+var pinsArray = getPinArray(NUMBER_OF_PINS);
 
 var renderPin = function (array) {
 
