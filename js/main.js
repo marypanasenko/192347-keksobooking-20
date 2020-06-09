@@ -1,4 +1,5 @@
 'use strict';
+
 var NUMBER_OF_PINS = 8;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
