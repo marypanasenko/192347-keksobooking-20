@@ -39,9 +39,15 @@ var pin = {
     max: 1100
   },
   y: {
-    min: 200,
-    max: 600
+    min: 130,
+    max: 630
   }
+};
+var offerType = {
+  flat: 'Квартира',
+  bungalo: 'Бунгало',
+  house: 'Дом',
+  palace: 'Дворец'
 };
 
 var getRandomIntInclusive = function (min, max) {
@@ -68,34 +74,18 @@ var shuffleArray = function (array) {
   return copy;
 };
 
-var getOfferType = function (array) {
-  var value;
-  if (array.offer.type === 'flat') {
-    value = 'Квартира';
-  } else if (array.offer.type === 'bungalo') {
-    value = 'Бунгало';
-  } else if (array.offer.type === 'house') {
-    value = 'Дом';
-  } else if (array.offer.type === 'palace') {
-    value = 'Дворец';
-  }
-  return value;
-};
-
-var getLocation = function (arrayXMin, arrayYMax) {
-  return getRandomIntInclusive(arrayXMin, arrayYMax);
-};
-
 var getPinArray = function (numberOfPins) {
   var pinsArray = [];
   for (var i = 1; i < numberOfPins + 1; i++) {
+    var locationX = getRandomIntInclusive(pin.x.min, pin.x.max);
+    var locationY = getRandomIntInclusive(pin.y.min, pin.y.max);
     var randomPins = {
       author: {
         avatar: 'img/avatars/user' + 0 + i + '.png'
       },
       offer: {
         title: getRandomStringElement(pin.title),
-        address: pin.address = [getLocation(pin.x.min, pin.x.max), getLocation(pin.x.min, pin.x.max)],
+        address: pin.address = [locationX, locationY],
         price: getRandomIntInclusive(pin.price.min, pin.price.max),
         type: getRandomStringElement(pin.type),
         rooms: getRandomIntInclusive(pin.rooms.min, pin.rooms.max),
@@ -107,8 +97,8 @@ var getPinArray = function (numberOfPins) {
         photos: shuffleArray(pin.photos.slice(0, getRandomIntInclusive(1, pin.photos.length))),
       },
       location: {
-        x: getLocation(pin.x.min, pin.x.max),
-        y: getLocation(pin.y.min, pin.y.max)
+        x: locationX,
+        y: locationY
       }
     };
     pinsArray.push(randomPins);
@@ -136,7 +126,7 @@ var renderCard = function (array) {
   cardElement.querySelector('.popup__title').textContent = array.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = array.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = array.offer.price + ' ₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = getOfferType(array);
+  cardElement.querySelector('.popup__type').textContent = offerType[array.offer.type];
   cardElement.querySelector('.popup__text--capacity').textContent = array.offer.rooms + ' комнаты для ' + array.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + array.offer.checkin + ', выезд до ' + array.offer.checkout;
   cardElement.querySelector('.popup__features').textContent = array.offer.features;
@@ -166,9 +156,9 @@ for (var i = 0; i < NUMBER_OF_PINS; i++) {
 
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var fragmentCard = document.createDocumentFragment();
-for (var j = 0; j < NUMBER_OF_PINS; j++) {
-  fragmentCard.appendChild(renderCard(pinsArray[j]));
-}
+
+fragmentCard.appendChild(renderCard(pinsArray[0]));
+
 
 mapPins.appendChild(fragmentPin);
 
