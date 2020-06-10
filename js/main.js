@@ -13,6 +13,8 @@ var cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.map__card');
 
+cardTemplate.querySelector('.popup__features').innerHTML = '';
+
 var pin = {
   title: ['Одноэтажный дом', 'Высотка', 'Многоэтажный дом', 'Котедж'],
   address: '600, 350',
@@ -85,7 +87,7 @@ var getPinArray = function (numberOfPins) {
       },
       offer: {
         title: getRandomStringElement(pin.title),
-        address: pin.address = [locationX, locationY],
+        address: locationX.toString() + ', ' + locationY.toString(),
         price: getRandomIntInclusive(pin.price.min, pin.price.max),
         type: getRandomStringElement(pin.type),
         rooms: getRandomIntInclusive(pin.rooms.min, pin.rooms.max),
@@ -129,22 +131,31 @@ var renderCard = function (array) {
   cardElement.querySelector('.popup__type').textContent = offerType[array.offer.type];
   cardElement.querySelector('.popup__text--capacity').textContent = array.offer.rooms + ' комнаты для ' + array.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + array.offer.checkin + ', выезд до ' + array.offer.checkout;
-  cardElement.querySelector('.popup__features').textContent = array.offer.features;
+
+  if (array.offer.features.length >= 1) {
+    for (var j = 0; j < array.offer.features.length; j++) {
+      var cardLiElement = document.createElement('li');
+      cardLiElement.classList.add('popup__feature');
+      cardLiElement.classList.add('popup__feature--' + array.offer.features[j]);
+      cardElement.querySelector('.popup__features').appendChild(cardLiElement);
+    }
+  }
+
   cardElement.querySelector('.popup__description').textContent = array.offer.description;
 
   cardElement.querySelector('.popup__photo').src = array.offer.photos[0];
   if (array.offer.photos.length > 1) {
-    for (var j = 1; j < array.offer.photos.length; j++) {
+    for (var i = 1; i < array.offer.photos.length; i++) {
       var cardImgElement = cardTemplate.querySelector('.popup__photo').cloneNode();
-      cardImgElement.src = array.offer.photos[j];
+      cardImgElement.src = array.offer.photos[i];
       cardElement.querySelector('.popup__photos').appendChild(cardImgElement);
     }
   }
 
   cardElement.querySelector('.popup__avatar').src = array.author.avatar;
 
-  cardElement.style.left = array.location.x + 'px';
-  cardElement.style.top = array.location.y + 'px';
+  // cardElement.style.left = array.location.x + 'px';
+  // cardElement.style.top = array.location.y + 'px';
 
   return cardElement;
 };
@@ -155,14 +166,12 @@ for (var i = 0; i < NUMBER_OF_PINS; i++) {
 }
 
 var mapFiltersContainer = document.querySelector('.map__filters-container');
-var fragmentCard = document.createDocumentFragment();
 
-fragmentCard.appendChild(renderCard(pinsArray[0]));
-
+var newCard = (renderCard(pinsArray[0]));
 
 mapPins.appendChild(fragmentPin);
 
-map.insertBefore(fragmentCard, mapFiltersContainer);
+map.insertBefore(newCard, mapFiltersContainer);
 
 map.classList.remove('map--faded');
 
