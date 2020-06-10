@@ -154,9 +154,6 @@ var renderCard = function (array) {
 
   cardElement.querySelector('.popup__avatar').src = array.author.avatar;
 
-  // cardElement.style.left = array.location.x + 'px';
-  // cardElement.style.top = array.location.y + 'px';
-
   return cardElement;
 };
 
