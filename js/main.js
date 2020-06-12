@@ -13,6 +13,21 @@ var cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.map__card');
 
+var adForm = document.querySelector('.ad-form');
+var mapFilters = document.querySelector('.map__filters');
+
+mapFilters.querySelectorAll('option').disabled = true;
+
+var disableForm = function (elementClass, fieldset, option= 1) {
+  var formElements = elementClass.children;
+  for (var i = 0; i < formElements.length; i++ ) {
+    formElements[i].disabled = true;
+  }
+};
+
+disableForm(mapFilters);
+disableForm(adForm);
+
 cardTemplate.querySelector('.popup__features').innerHTML = '';
 
 var pin = {
@@ -162,13 +177,13 @@ for (var i = 0; i < NUMBER_OF_PINS; i++) {
   fragmentPin.appendChild(renderPin(pinsArray[i]));
 }
 
-var mapFiltersContainer = document.querySelector('.map__filters-container');
-
-var newCard = (renderCard(pinsArray[0]));
+// var mapFiltersContainer = document.querySelector('.map__filters-container');
+//
+// var newCard = (renderCard(pinsArray[0]));
 
 mapPins.appendChild(fragmentPin);
 
-map.insertBefore(newCard, mapFiltersContainer);
+// map.insertBefore(newCard, mapFiltersContainer);
 
 map.classList.remove('map--faded');
 
