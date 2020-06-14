@@ -3,7 +3,9 @@
 var NUMBER_OF_PINS = 8;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-var mapPins = document.querySelector('.map__pins');
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_POINTER = 22;
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
@@ -13,9 +15,13 @@ var cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.map__card');
 
+var mapPins = document.querySelector('.map__pins');
 var adForm = document.querySelector('.ad-form');
+var roomNumber = adForm.querySelector('#room_number');
+var capacityGuests = adForm.querySelector('#capacity');
 var mapFilters = document.querySelector('.map__filters');
 var mapPinMain = document.querySelector('.map__pin--main');
+var inputAddress = document.querySelector('#address');
 
 var disableForm = function (elementClass, trueOrFalse) {
   var formElements = elementClass.children;
@@ -27,12 +33,34 @@ var disableForm = function (elementClass, trueOrFalse) {
 disableForm(mapFilters, true);
 disableForm(adForm, true);
 
-var pageActive = function () {
-  map.classList.remove('map--faded');
-  adForm.classList.remove('ad-form--disabled');
-  mapPins.appendChild(fragmentPin);
-  disableForm(mapFilters, false);
-  disableForm(adForm, false);
+var getLocationInput = function () {
+  var locationXMainPin = Math.round(parseFloat(mapPinMain.style.left) + MAIN_PIN_WIDTH / 2);
+  var locationYMainPin = parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER;
+  inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
+};
+
+var checkRoomsForGuests = function (rooms, guests) {
+  if (rooms === guests) {
+    return true;
+  } if (rooms === '2' && guests === '1') {
+    return true;
+  } if (rooms === '3' && (guests === '2' || guests === '1')) {
+    return true;
+  } if (rooms === '100' && guests === '0') {
+    return true;
+  }
+  return false;
+};
+
+var onRoomsForGuestsValidationCheck = function (listenedElement, element) {
+  listenedElement.addEventListener('change', function () {
+    if (!checkRoomsForGuests(roomNumber.value, capacityGuests.value)) {
+      listenedElement.setCustomValidity('Выберете подходящее колличество');
+    } else {
+      listenedElement.setCustomValidity('');
+      element.setCustomValidity('');
+    }
+  });
 };
 
 mapPinMain.addEventListener('mousedown', buttonPress, false);
@@ -47,6 +75,18 @@ mapPinMain.addEventListener('keydown', function (evt) {
     pageActive();
   }
 });
+
+var pageActive = function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  mapPins.appendChild(fragmentPin);
+  disableForm(mapFilters, false);
+  disableForm(adForm, false);
+  getLocationInput();
+  onRoomsForGuestsValidationCheck(roomNumber, capacityGuests);
+  onRoomsForGuestsValidationCheck(capacityGuests, roomNumber);
+  mapPinMain.removeEventListener('mosedown', buttonPress());
+};
 
 cardTemplate.querySelector('.popup__features').innerHTML = '';
 
@@ -80,6 +120,7 @@ var pin = {
     max: 630
   }
 };
+
 // var offerType = {
 //   flat: 'Квартира',
 //   bungalo: 'Бунгало',
