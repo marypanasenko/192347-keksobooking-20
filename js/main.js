@@ -6,6 +6,8 @@ var PIN_HEIGHT = 70;
 var MAIN_PIN_WIDTH = 65;
 var MAIN_PIN_HEIGHT = 65;
 var MAIN_PIN_POINTER = 22;
+var NUMBER_OF_ROOMS = '100';
+var NOT_FOR_GUESTS = '0';
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
@@ -23,6 +25,10 @@ var mapFilters = document.querySelector('.map__filters');
 var mapPinMain = document.querySelector('.map__pin--main');
 var inputAddress = document.querySelector('#address');
 
+var locationXMainPin = Math.round(parseFloat(mapPinMain.style.left) + MAIN_PIN_WIDTH / 2);
+var locationYCenterMainPin = Math.round(parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT / 2);
+var locationYMainPin = parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER;
+
 var disableForm = function (elementClass, trueOrFalse) {
   var formElements = elementClass.children;
   for (var i = 0; i < formElements.length; i++) {
@@ -33,13 +39,7 @@ var disableForm = function (elementClass, trueOrFalse) {
 disableForm(mapFilters, true);
 disableForm(adForm, true);
 
-
-var getLocationInput = function () {
-  var locationXMainPin = Math.round(parseFloat(mapPinMain.style.left) + MAIN_PIN_WIDTH / 2);
-  var locationYMainPin = parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER;
-  inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
-};
-getLocationInput();
+inputAddress.value = locationXMainPin + ', ' + locationYCenterMainPin;
 
 var onRoomsForGuestsValidationCheck = function (listenedElement, element) {
   listenedElement.addEventListener('change', function () {
@@ -48,9 +48,9 @@ var onRoomsForGuestsValidationCheck = function (listenedElement, element) {
 
     if (guests > rooms) {
       listenedElement.setCustomValidity('Выберете больше комнат ' + capacityGuests[capacityGuests.selectedIndex].innerHTML + ' или уменьшите количество комнат');
-    } else if (rooms === '100' && guests !== '0') {
+    } else if (rooms === NUMBER_OF_ROOMS && guests !== NOT_FOR_GUESTS) {
       listenedElement.setCustomValidity('Эта позиция не для гостей');
-    } else if (guests === '0' && rooms !== '100') {
+    } else if (guests === NOT_FOR_GUESTS && rooms !== NUMBER_OF_ROOMS) {
       listenedElement.setCustomValidity('Вам потребуется 100 комнат');
     } else {
       listenedElement.setCustomValidity('');
@@ -82,6 +82,7 @@ var pageActive = function () {
   onRoomsForGuestsValidationCheck(roomNumber, capacityGuests);
   onRoomsForGuestsValidationCheck(capacityGuests, roomNumber);
   mapPinMain.removeEventListener('mosedown', buttonPress);
+  inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
 };
 
 cardTemplate.querySelector('.popup__features').innerHTML = '';
