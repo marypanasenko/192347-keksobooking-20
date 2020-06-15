@@ -33,29 +33,25 @@ var disableForm = function (elementClass, trueOrFalse) {
 disableForm(mapFilters, true);
 disableForm(adForm, true);
 
+
 var getLocationInput = function () {
   var locationXMainPin = Math.round(parseFloat(mapPinMain.style.left) + MAIN_PIN_WIDTH / 2);
   var locationYMainPin = parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER;
   inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
 };
-
-var checkRoomsForGuests = function (rooms, guests) {
-  if (rooms === guests) {
-    return true;
-  } if (rooms === '2' && guests === '1') {
-    return true;
-  } if (rooms === '3' && (guests === '2' || guests === '1')) {
-    return true;
-  } if (rooms === '100' && guests === '0') {
-    return true;
-  }
-  return false;
-};
+getLocationInput();
 
 var onRoomsForGuestsValidationCheck = function (listenedElement, element) {
   listenedElement.addEventListener('change', function () {
-    if (!checkRoomsForGuests(roomNumber.value, capacityGuests.value)) {
-      listenedElement.setCustomValidity('Выберете подходящее колличество');
+    var rooms = roomNumber.value;
+    var guests = capacityGuests.value;
+
+    if (guests > rooms) {
+      listenedElement.setCustomValidity('Выберете больше комнат ' + capacityGuests[capacityGuests.selectedIndex].innerHTML + ' или уменьшите количество комнат');
+    } else if (rooms === '100' && guests !== '0') {
+      listenedElement.setCustomValidity('Эта позиция не для гостей');
+    } else if (guests === '0' && rooms !== '100') {
+      listenedElement.setCustomValidity('Вам потребуется 100 комнат');
     } else {
       listenedElement.setCustomValidity('');
       element.setCustomValidity('');
@@ -64,6 +60,7 @@ var onRoomsForGuestsValidationCheck = function (listenedElement, element) {
 };
 
 mapPinMain.addEventListener('mousedown', buttonPress, false);
+
 function buttonPress(e) {
   if (e.button === 0) {
     pageActive();
@@ -82,10 +79,9 @@ var pageActive = function () {
   mapPins.appendChild(fragmentPin);
   disableForm(mapFilters, false);
   disableForm(adForm, false);
-  getLocationInput();
   onRoomsForGuestsValidationCheck(roomNumber, capacityGuests);
   onRoomsForGuestsValidationCheck(capacityGuests, roomNumber);
-  mapPinMain.removeEventListener('mosedown', buttonPress());
+  mapPinMain.removeEventListener('mosedown', buttonPress);
 };
 
 cardTemplate.querySelector('.popup__features').innerHTML = '';
