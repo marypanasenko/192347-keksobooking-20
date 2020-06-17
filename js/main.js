@@ -25,6 +25,7 @@ var mapFilters = document.querySelector('.map__filters');
 var mapPinMain = document.querySelector('.map__pin--main');
 var inputAddress = document.querySelector('#address');
 
+
 var locationXMainPin = Math.round(parseFloat(mapPinMain.style.left) + MAIN_PIN_WIDTH / 2);
 var locationYCenterMainPin = Math.round(parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT / 2);
 var locationYMainPin = parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER;
@@ -73,18 +74,6 @@ mapPinMain.addEventListener('keydown', function (evt) {
   }
 });
 
-var pageActive = function () {
-  map.classList.remove('map--faded');
-  adForm.classList.remove('ad-form--disabled');
-  mapPins.appendChild(fragmentPin);
-  disableForm(mapFilters, false);
-  disableForm(adForm, false);
-  onRoomsForGuestsValidationCheck(roomNumber, capacityGuests);
-  onRoomsForGuestsValidationCheck(capacityGuests, roomNumber);
-  mapPinMain.removeEventListener('mosedown', buttonPress);
-  inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
-};
-
 cardTemplate.querySelector('.popup__features').innerHTML = '';
 
 var pin = {
@@ -117,13 +106,24 @@ var pin = {
     max: 630
   }
 };
-
-// var offerType = {
-//   flat: 'Квартира',
-//   bungalo: 'Бунгало',
-//   house: 'Дом',
-//   palace: 'Дворец'
-// };
+var offerTypeAndPrice = {
+  flat: {
+    'type': 'Квартира',
+    'price': 1000
+  },
+  bungalo: {
+    'type': 'Бунгало',
+    'price': 0
+  },
+  house: {
+    'type': 'Дом',
+    'price': 5000
+  },
+  palace: {
+    'type': 'Дворец',
+    'price': 10000
+  }
+};
 
 var getRandomIntInclusive = function (min, max) {
   min = Math.ceil(min);
@@ -194,49 +194,117 @@ var renderPin = function (array) {
   return pinElement;
 };
 
-// var renderCard = function (array) {
-//
-//   var cardElement = cardTemplate.cloneNode(true);
-//
-//   cardElement.querySelector('.popup__title').textContent = array.offer.title;
-//   cardElement.querySelector('.popup__text--address').textContent = array.offer.address;
-//   cardElement.querySelector('.popup__text--price').textContent = array.offer.price + ' ₽/ночь';
-//   cardElement.querySelector('.popup__type').textContent = offerType[array.offer.type];
-//   cardElement.querySelector('.popup__text--capacity').textContent = array.offer.rooms + ' комнаты для ' + array.offer.guests + ' гостей';
-//   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + array.offer.checkin + ', выезд до ' + array.offer.checkout;
-//
-//   if (array.offer.features.length >= 1) {
-//     for (var j = 0; j < array.offer.features.length; j++) {
-//       var cardLiElement = document.createElement('li');
-//       cardLiElement.classList.add('popup__feature');
-//       cardLiElement.classList.add('popup__feature--' + array.offer.features[j]);
-//       cardElement.querySelector('.popup__features').appendChild(cardLiElement);
-//     }
-//   }
-//
-//   cardElement.querySelector('.popup__description').textContent = array.offer.description;
-//
-//   cardElement.querySelector('.popup__photo').src = array.offer.photos[0];
-//   if (array.offer.photos.length > 1) {
-//     for (var i = 1; i < array.offer.photos.length; i++) {
-//       var cardImgElement = cardTemplate.querySelector('.popup__photo').cloneNode();
-//       cardImgElement.src = array.offer.photos[i];
-//       cardElement.querySelector('.popup__photos').appendChild(cardImgElement);
-//     }
-//   }
-//
-//   cardElement.querySelector('.popup__avatar').src = array.author.avatar;
-//
-//   return cardElement;
-// };
+var renderCard = function (array) {
+
+  var cardElement = cardTemplate.cloneNode(true);
+
+  cardElement.querySelector('.popup__title').textContent = array.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = array.offer.address;
+  cardElement.querySelector('.popup__text--price').textContent = array.offer.price + ' ₽/ночь';
+  cardElement.querySelector('.popup__type').textContent = offerTypeAndPrice[array.offer.type].type;
+  cardElement.querySelector('.popup__text--capacity').textContent = array.offer.rooms + ' комнаты для ' + array.offer.guests + ' гостей';
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + array.offer.checkin + ', выезд до ' + array.offer.checkout;
+
+  if (array.offer.features.length >= 1) {
+    for (var j = 0; j < array.offer.features.length; j++) {
+      var cardLiElement = document.createElement('li');
+      cardLiElement.classList.add('popup__feature');
+      cardLiElement.classList.add('popup__feature--' + array.offer.features[j]);
+      cardElement.querySelector('.popup__features').appendChild(cardLiElement);
+    }
+  }
+
+  cardElement.querySelector('.popup__description').textContent = array.offer.description;
+
+  cardElement.querySelector('.popup__photo').src = array.offer.photos[0];
+  if (array.offer.photos.length > 1) {
+    for (var i = 1; i < array.offer.photos.length; i++) {
+      var cardImgElement = cardTemplate.querySelector('.popup__photo').cloneNode();
+      cardImgElement.src = array.offer.photos[i];
+      cardElement.querySelector('.popup__photos').appendChild(cardImgElement);
+    }
+  }
+
+  cardElement.querySelector('.popup__avatar').src = array.author.avatar;
+
+  return cardElement;
+};
 
 var fragmentPin = document.createDocumentFragment();
 for (var i = 0; i < NUMBER_OF_PINS; i++) {
   fragmentPin.appendChild(renderPin(pinsArray[i]));
 }
+var removeCard = function () {
+  var card = document.querySelector('.map__card');
+  var pinActive = document.querySelector('.map__pin--active');
+  if (pinActive) {
+    pinActive.classList.remove('map__pin--active');
+  }
+  if (card) {
+    card.remove();
+  }
+  document.removeEventListener('keydown', onCardEscPress);
+};
 
-// var mapFiltersContainer = document.querySelector('.map__filters-container');
-//
-// var newCard = (renderCard(pinsArray[0]));
+var onCardEscPress = function (evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    removeCard();
+  }
+};
 
-// map.insertBefore(newCard, mapFiltersContainer);
+var pageActive = function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  mapPins.appendChild(fragmentPin);
+  disableForm(mapFilters, false);
+  disableForm(adForm, false);
+  onRoomsForGuestsValidationCheck(roomNumber, capacityGuests);
+  onRoomsForGuestsValidationCheck(capacityGuests, roomNumber);
+  mapPinMain.removeEventListener('mosedown', buttonPress);
+  inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
+
+  var mapPin = mapPins.querySelectorAll('button:not(.map__pin--main)');
+
+  var onPinClick = function (pinOnMap, array) {
+    pinOnMap.addEventListener('click', function () {
+      removeCard();
+      pinOnMap.classList.add('map__pin--active');
+      var newCard = (renderCard(array));
+      var mapFiltersContainer = document.querySelector('.map__filters-container');
+      map.insertBefore(newCard, mapFiltersContainer);
+
+      var popupClose = document.querySelector('.popup__close');
+
+      popupClose.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        removeCard();
+      });
+      document.addEventListener('keydown', onCardEscPress);
+    });
+  };
+  for (var j = 0; j < NUMBER_OF_PINS; j++) {
+    onPinClick(mapPin[j], pinsArray[j]);
+  }
+};
+
+var inputPrice = document.querySelector('#price');
+var inputType = document.querySelector('#type');
+
+var onPriceForTypeValidationCheck = function () {
+  inputPrice.min = offerTypeAndPrice[inputType.value].price;
+  inputPrice.placeholder = offerTypeAndPrice[inputType.value].price;
+};
+inputType.addEventListener('change', onPriceForTypeValidationCheck);
+
+var inputTimeIn = document.querySelector('#timein');
+var inputTimeOut = document.querySelector('#timeout');
+
+var onTimeInForTimeOutValidationCheck = function () {
+  inputTimeOut.value = inputTimeIn.value;
+};
+var onTimeOutForTimeInValidationCheck = function () {
+  inputTimeIn.value = inputTimeOut.value;
+};
+inputTimeIn.addEventListener('change', onTimeInForTimeOutValidationCheck);
+inputTimeOut.addEventListener('change', onTimeOutForTimeInValidationCheck);
