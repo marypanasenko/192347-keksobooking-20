@@ -106,14 +106,24 @@ var pin = {
     max: 630
   }
 };
-
-var offerType = {
-  flat: 'Квартира',
-  bungalo: 'Бунгало',
-  house: 'Дом',
-  palace: 'Дворец'
+var offerTypeAndPrice = {
+  flat: {
+    'type': 'Квартира',
+    'price': 1000
+  },
+  bungalo: {
+    'type': 'Бунгало',
+    'price': 0
+  },
+  house: {
+    'type': 'Дом',
+    'price': 5000
+  },
+  palace: {
+    'type': 'Дворец',
+    'price': 10000
+  }
 };
-
 
 var getRandomIntInclusive = function (min, max) {
   min = Math.ceil(min);
@@ -191,7 +201,7 @@ var renderCard = function (array) {
   cardElement.querySelector('.popup__title').textContent = array.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = array.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = array.offer.price + ' ₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = offerType[array.offer.type];
+  cardElement.querySelector('.popup__type').textContent = offerTypeAndPrice[array.offer.type].type;
   cardElement.querySelector('.popup__text--capacity').textContent = array.offer.rooms + ' комнаты для ' + array.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + array.offer.checkin + ', выезд до ' + array.offer.checkout;
 
@@ -226,6 +236,10 @@ for (var i = 0; i < NUMBER_OF_PINS; i++) {
 }
 var removeCard = function () {
   var card = document.querySelector('.map__card');
+  var pinActive = document.querySelector('.map__pin--active');
+  if (pinActive) {
+    pinActive.classList.remove('map__pin--active');
+  }
   if (card) {
     card.remove();
   }
@@ -255,9 +269,11 @@ var pageActive = function () {
   var onPinClick = function (pinOnMap, array) {
     pinOnMap.addEventListener('click', function () {
       removeCard();
+      pinOnMap.classList.add('map__pin--active');
       var newCard = (renderCard(array));
       var mapFiltersContainer = document.querySelector('.map__filters-container');
       map.insertBefore(newCard, mapFiltersContainer);
+
       var popupClose = document.querySelector('.popup__close');
 
       popupClose.addEventListener('click', function (evt) {
@@ -272,19 +288,12 @@ var pageActive = function () {
   }
 };
 
-var offerPrice = {
-  flat: 1000,
-  bungalo: 0,
-  house: 5000,
-  palace: 10000
-};
-
 var inputPrice = document.querySelector('#price');
 var inputType = document.querySelector('#type');
 
 var onPriceForTypeValidationCheck = function () {
-  inputPrice.min = offerPrice[inputType.value];
-  inputPrice.placeholder = offerPrice[inputType.value];
+  inputPrice.min = offerTypeAndPrice[inputType.value].price;
+  inputPrice.placeholder = offerTypeAndPrice[inputType.value].price;
 };
 inputType.addEventListener('change', onPriceForTypeValidationCheck);
 
