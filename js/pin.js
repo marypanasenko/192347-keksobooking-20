@@ -88,6 +88,7 @@
     fragmentPin.appendChild(renderPin(pinsArray[i]));
   }
   window.pin = {
+    pin: pin,
     fragmentPin: fragmentPin,
     pinsArray: pinsArray
   };

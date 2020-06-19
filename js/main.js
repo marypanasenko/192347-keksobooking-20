@@ -26,6 +26,64 @@
 
   inputAddress.value = locationXMainPin + ', ' + locationYCenterMainPin;
 
+  disableForm(mapFilters, true);
+  disableForm(adForm, true);
+
+  mapPinMain.addEventListener('mousedown', buttonPress, false);
+
+  function buttonPress(e) {
+    if (e.button === 0) {
+      pageActive();
+    }
+  }
+
+  mapPinMain.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Enter') {
+      pageActive();
+    }
+  });
+
+  var pageActive = function () {
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+
+    disableForm(mapFilters, false);
+    disableForm(adForm, false);
+    window.form.onRoomsForGuestsValidationCheck(window.form.roomNumber, window.form.capacityGuests);
+    window.form.onRoomsForGuestsValidationCheck(window.form.capacityGuests, window.form.roomNumber);
+    mapPinMain.removeEventListener('mosedown', buttonPress);
+    inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
+
+    var activePin = function () {
+      mapPins.appendChild(window.pin.fragmentPin);
+      var mapPin = mapPins.querySelectorAll('button:not(.map__pin--main)');
+
+      var onPinClick = function (pinOnMap, array) {
+        pinOnMap.addEventListener('click', function () {
+          removeCard();
+          pinOnMap.classList.add('map__pin--active');
+          var newCard = (window.card.renderCard(array));
+          var mapFiltersContainer = document.querySelector('.map__filters-container');
+          map.insertBefore(newCard, mapFiltersContainer);
+
+          var popupClose = document.querySelector('.popup__close');
+
+          popupClose.addEventListener('click', function (evt) {
+            evt.preventDefault();
+            removeCard();
+          });
+          document.addEventListener('keydown', onCardEscPress);
+        });
+      };
+      for (var j = 0; j < window.data.NUMBER_OF_PINS; j++) {
+        onPinClick(mapPin[j], window.pin.pinsArray[j]);
+      }
+      mapPinMain.removeEventListener('mouseup', activePin);
+    };
+    mapPinMain.addEventListener('mouseup', activePin);
+
+  };
+
   var removeCard = function () {
     var card = document.querySelector('.map__card');
     var pinActive = document.querySelector('.map__pin--active');
@@ -45,56 +103,53 @@
     }
   };
 
-  var pageActive = function () {
-    map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
-    mapPins.appendChild(window.pin.fragmentPin);
-    disableForm(mapFilters, false);
-    disableForm(adForm, false);
-    window.form.onRoomsForGuestsValidationCheck(window.form.roomNumber, window.form.capacityGuests);
-    window.form.onRoomsForGuestsValidationCheck(window.form.capacityGuests, window.form.roomNumber);
-    mapPinMain.removeEventListener('mosedown', buttonPress);
-    inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
+  mapPinMain.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
 
-    var mapPin = mapPins.querySelectorAll('button:not(.map__pin--main)');
-
-    var onPinClick = function (pinOnMap, array) {
-      pinOnMap.addEventListener('click', function () {
-        removeCard();
-        pinOnMap.classList.add('map__pin--active');
-        var newCard = (window.card.renderCard(array));
-        var mapFiltersContainer = document.querySelector('.map__filters-container');
-        map.insertBefore(newCard, mapFiltersContainer);
-
-        var popupClose = document.querySelector('.popup__close');
-
-        popupClose.addEventListener('click', function (evt) {
-          evt.preventDefault();
-          removeCard();
-        });
-        document.addEventListener('keydown', onCardEscPress);
-      });
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
     };
-    for (var j = 0; j < window.data.NUMBER_OF_PINS; j++) {
-      onPinClick(mapPin[j], window.pin.pinsArray[j]);
-    }
-  };
 
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
 
-  disableForm(mapFilters, true);
-  disableForm(adForm, true);
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
 
-  mapPinMain.addEventListener('mousedown', buttonPress, false);
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+      var pinX = mapPinMain.offsetLeft - shift.x;
+      var pinY = mapPinMain.offsetTop - shift.y;
 
-  function buttonPress(e) {
-    if (e.button === 0) {
-      pageActive();
-    }
-  }
+      if (pinX > window.pin.pin.x.max) {
+        pinX = window.pin.pin.x.max;
+      } else if (pinX < window.pin.pin.x.min) {
+        pinX = window.pin.pin.x.min;
+      }
+      if (pinY > window.pin.pin.y.max) {
+        pinY = window.pin.pin.y.max;
+      } else if (pinY < window.pin.pin.y.min) {
+        pinY = window.pin.pin.y.min;
+      }
 
-  mapPinMain.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
-      pageActive();
-    }
+      mapPinMain.style.top = pinY + 'px';
+      mapPinMain.style.left = pinX + 'px';
+
+      inputAddress.value = (pinX + Math.round(MAIN_PIN_WIDTH / 2)) + ', ' + (pinY + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER);
+
+    };
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 })();
