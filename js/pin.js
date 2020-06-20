@@ -29,8 +29,8 @@
     description: '',
     photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
     x: {
-      min: 100,
-      max: 1100
+      min: 33,
+      max: 1168
     },
     y: {
       min: 130,
