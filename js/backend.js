@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-  var URL_LOAD = 'https://javascript.pages.academy/keksobooking/data.';
+  var URL_LOAD = 'https://javascript.pages.academy/keksobooking/data';
   // var TIMEOUT_IN_MS = 10000;
   var StatusCode = {
     OK: 200
@@ -21,7 +21,7 @@
   var load = function (onLoad) {
     makeRequest('GET', URL_LOAD, onLoad);
   };
-  console.log(load());
+
   window.backend = {
     load: load
   };
