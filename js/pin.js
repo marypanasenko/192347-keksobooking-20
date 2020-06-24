@@ -82,18 +82,11 @@
 
     return pinElement;
   };
-  var successHandler = function (pinsArray) {
-    var fragmentPin = document.createDocumentFragment();
-    for (var i = 0; i < window.data.NUMBER_OF_PINS; i++) {
-      fragmentPin.appendChild(renderPin(pinsArray[i]));
-    }
-    document.querySelector('.map__pins').appendChild(fragmentPin);
-
-  };
 
   window.pin = {
     pin: pin,
-    successHandler: successHandler
+    renderPin: renderPin
+
   };
 })();
 
