@@ -71,7 +71,7 @@
     for (var j = 0; j < checkboxFeature.length; j++) {
       checkboxFeature[j].checked = false;
     }
-  }
+  };
 
   window.form = {
     onRoomsForGuestsValidationCheck: onRoomsForGuestsValidationCheck,

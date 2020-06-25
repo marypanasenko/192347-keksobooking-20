@@ -14,13 +14,9 @@
 
   var inputAddress = document.querySelector('#address');
 
-
-
   var locationXMainPin = Math.round(parseFloat(mapPinMain.style.left) + MAIN_PIN_WIDTH / 2);
   var locationYCenterMainPin = Math.round(parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT / 2);
   var locationYMainPin = parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER;
-
-
 
   inputAddress.value = locationXMainPin + ', ' + locationYCenterMainPin;
 
@@ -107,8 +103,6 @@
     }
   };
   var adFormReset = document.querySelector('.ad-form__reset');
-
-
 
   var pageReset = function () {
     adFormReset.removeEventListener('click', pageReset);
