@@ -4,6 +4,11 @@
   var NOT_FOR_GUESTS = '0';
   var roomNumber = document.querySelector('#room_number');
   var capacityGuests = document.querySelector('#capacity');
+  var inputPrice = document.querySelector('#price');
+  var inputType = document.querySelector('#type');
+  var inputTitle = document.querySelector('#title');
+  var textareaDescription = document.querySelector('#description');
+  var checkboxFeature = document.querySelectorAll('.feature__checkbox');
 
   var onRoomsForGuestsValidationCheck = function (listenedElement, element) {
     listenedElement.addEventListener('change', function () {
@@ -23,9 +28,6 @@
     });
   };
 
-  var inputPrice = document.querySelector('#price');
-  var inputType = document.querySelector('#type');
-
   var onPriceForTypeValidationCheck = function () {
     inputPrice.min = window.data.offerTypeAndPrice[inputType.value].price;
     inputPrice.placeholder = window.data.offerTypeAndPrice[inputType.value].price;
@@ -43,10 +45,44 @@
   };
   inputTimeIn.addEventListener('change', onTimeInForTimeOutValidationCheck);
   inputTimeOut.addEventListener('change', onTimeOutForTimeInValidationCheck);
+
+  var startValues = {
+    inputType: inputType.value,
+    inputPrice: inputPrice.min,
+    timeIn: inputTimeIn.value,
+    timeOut: inputTimeOut.value,
+    roomNumber: roomNumber.value,
+    capacityGuests: capacityGuests.value
+  };
+
+  var resetValues = function () {
+
+    inputTitle.value = '';
+    inputPrice.value = '';
+    inputPrice.placeholder = startValues.inputPrice;
+    inputPrice.min = startValues.inputPrice;
+    textareaDescription.value = '';
+    inputType.value = startValues.inputType;
+    inputTimeIn.value = startValues.timeIn;
+    inputTimeOut.value = startValues.timeOut;
+    roomNumber.value = startValues.roomNumber;
+    capacityGuests.value = startValues.capacityGuests;
+
+    for (var j = 0; j < checkboxFeature.length; j++) {
+      checkboxFeature[j].checked = false;
+    }
+  }
+
   window.form = {
     onRoomsForGuestsValidationCheck: onRoomsForGuestsValidationCheck,
+    onPriceForTypeValidationCheck: onPriceForTypeValidationCheck,
     roomNumber: roomNumber,
-    capacityGuests: capacityGuests
+    capacityGuests: capacityGuests,
+    inputPrice: inputPrice,
+    inputType: inputType,
+    resetValues: resetValues
   };
+
+
 })();
 

@@ -2,6 +2,10 @@
 (function () {
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
+  var START_COORDINATES = {
+    left: 570,
+    top: 375
+  };
 
   var pinTemplate = document.querySelector('#pin')
     .content
@@ -85,7 +89,8 @@
 
   window.pin = {
     pin: pin,
-    renderPin: renderPin
+    renderPin: renderPin,
+    START_COORDINATES: START_COORDINATES
 
   };
 })();
