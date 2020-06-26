@@ -110,7 +110,7 @@
     adForm.classList.add('ad-form--disabled');
     window.util.disableForm(mapFilters, true);
     window.util.disableForm(adForm, true);
-    window.form.resetValues();
+    adForm.reset();
 
     mapPinMain.style.left = window.pin.START_COORDINATES.left + 'px';
     mapPinMain.style.top = window.pin.START_COORDINATES.top + 'px';
@@ -170,11 +170,6 @@
     for (var j = 0; j < window.data.NUMBER_OF_PINS; j++) {
       onPinClick(mapPin[j], loadedPins[j]);
     }
-
-  };
-
-
-  var pageActive = function () {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     window.util.disableForm(mapFilters, false);
@@ -182,10 +177,13 @@
     window.form.onRoomsForGuestsValidationCheck(window.form.roomNumber, window.form.capacityGuests);
     window.form.onRoomsForGuestsValidationCheck(window.form.capacityGuests, window.form.roomNumber);
     adFormReset.addEventListener('click', pageReset);
-
     inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
-    window.backend.load(successHandler, errorHandler);
     mapPinMain.removeEventListener('mousedown', buttonPress);
+  };
+
+
+  var pageActive = function () {
+    window.backend.load(successHandler, errorHandler);
   };
   var form = document.querySelector('.ad-form');
 
