@@ -4,6 +4,8 @@
   var NOT_FOR_GUESTS = '0';
   var roomNumber = document.querySelector('#room_number');
   var capacityGuests = document.querySelector('#capacity');
+  var inputPrice = document.querySelector('#price');
+  var inputType = document.querySelector('#type');
 
   var onRoomsForGuestsValidationCheck = function (listenedElement, element) {
     listenedElement.addEventListener('change', function () {
@@ -23,9 +25,6 @@
     });
   };
 
-  var inputPrice = document.querySelector('#price');
-  var inputType = document.querySelector('#type');
-
   var onPriceForTypeValidationCheck = function () {
     inputPrice.min = window.data.offerTypeAndPrice[inputType.value].price;
     inputPrice.placeholder = window.data.offerTypeAndPrice[inputType.value].price;
@@ -43,10 +42,16 @@
   };
   inputTimeIn.addEventListener('change', onTimeInForTimeOutValidationCheck);
   inputTimeOut.addEventListener('change', onTimeOutForTimeInValidationCheck);
+
   window.form = {
     onRoomsForGuestsValidationCheck: onRoomsForGuestsValidationCheck,
+    onPriceForTypeValidationCheck: onPriceForTypeValidationCheck,
     roomNumber: roomNumber,
-    capacityGuests: capacityGuests
+    capacityGuests: capacityGuests,
+    inputPrice: inputPrice,
+    inputType: inputType,
   };
+
+
 })();
 

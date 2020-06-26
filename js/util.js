@@ -23,11 +23,18 @@
     }
     return copy;
   };
+  var disableForm = function (elementClass, trueOrFalse) {
+    var formElements = elementClass.children;
+    for (var i = 0; i < formElements.length; i++) {
+      formElements[i].disabled = trueOrFalse;
+    }
+  };
 
   window.util = {
     getRandomIntInclusive: getRandomIntInclusive,
     getRandomStringElement: getRandomStringElement,
-    shuffleArray: shuffleArray
+    shuffleArray: shuffleArray,
+    disableForm: disableForm
   };
 })();
 
