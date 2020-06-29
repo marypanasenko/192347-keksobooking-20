@@ -13,6 +13,7 @@
   var mapPinMain = document.querySelector('.map__pin--main');
 
   var inputAddress = document.querySelector('#address');
+  var selectHouseType = document.querySelector('#housing-type');
 
   var locationXMainPin = Math.round(parseFloat(mapPinMain.style.left) + MAIN_PIN_WIDTH / 2);
   var locationYCenterMainPin = Math.round(parseFloat(mapPinMain.style.top) + MAIN_PIN_HEIGHT / 2);
@@ -111,6 +112,7 @@
     window.util.disableForm(mapFilters, true);
     window.util.disableForm(adForm, true);
     adForm.reset();
+    mapFilters.reset();
 
     mapPinMain.style.left = window.pin.START_COORDINATES.left + 'px';
     mapPinMain.style.top = window.pin.START_COORDINATES.top + 'px';
@@ -157,14 +159,18 @@
     document.addEventListener('keydown', onEscPress);
   };
 
-
-  var successHandler = function (pinsArray) {
-    loadedPins = pinsArray;
+  var render = function (data) {
     var fragmentPin = document.createDocumentFragment();
+    document.querySelector('.map__pins').innerHTML = '';
     for (var i = 0; i < window.data.NUMBER_OF_PINS; i++) {
-      fragmentPin.appendChild(window.pin.renderPin(pinsArray[i]));
+      fragmentPin.appendChild(window.pin.renderPin(data[i]));
     }
     document.querySelector('.map__pins').appendChild(fragmentPin);
+  };
+
+  var successHandler = function (data) {
+    loadedPins = data;
+    render(data);
 
     var mapPin = mapPins.querySelectorAll('button:not(.map__pin--main)');
     for (var j = 0; j < window.data.NUMBER_OF_PINS; j++) {
@@ -181,10 +187,23 @@
     mapPinMain.removeEventListener('mousedown', buttonPress);
   };
 
-
   var pageActive = function () {
     window.backend.load(successHandler, errorHandler);
   };
+
+  selectHouseType.addEventListener('change', function () {
+    console.log(selectHouseType.value);
+    loadedPins.forEach((element) => {
+
+      if (element.offer.type !== selectHouseType.value) {
+        loadedPins = Array.from(element).slice();
+
+        console.log(loadedPins);
+      }
+    })
+    render(loadedPins);
+  });
+
   var form = document.querySelector('.ad-form');
 
   var submitHandler = function (evt) {
