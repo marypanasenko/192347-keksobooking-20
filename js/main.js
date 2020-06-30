@@ -163,25 +163,16 @@
     render(data);
   };
 
-  var arrayLength = function (data) {
-    var lengthData;
-    if (data.length >= window.data.NUMBER_OF_PINS) {
-      lengthData = window.data.NUMBER_OF_PINS;
-    } else {
-      lengthData = data.length;
-    }
-    return lengthData;
-  };
-
   var render = function (data) {
+    var lengthData = data.length >= window.data.NUMBER_OF_PINS ? window.data.NUMBER_OF_PINS : data.length;
     var fragmentPin = document.createDocumentFragment();
     document.querySelector('.map__pins').innerHTML = '';
-    for (var i = 0; i < arrayLength(data); i++) {
+    for (var i = 0; i < lengthData; i++) {
       fragmentPin.appendChild(window.pin.renderPin(data[i]));
     }
     document.querySelector('.map__pins').appendChild(fragmentPin);
     var mapPin = mapPins.querySelectorAll('button:not(.map__pin--main)');
-    for (var j = 0; j < arrayLength(data); j++) {
+    for (var j = 0; j < lengthData; j++) {
       onPinClick(mapPin[j], data[j]);
     }
   };
@@ -212,8 +203,6 @@
     }
     var newArr = loadedPins.filter(function (element) {
       return element.offer.type === value;
-    }).map(function (element) {
-      return element;
     });
     removeCard();
     return pin.onTypeChange(newArr);
