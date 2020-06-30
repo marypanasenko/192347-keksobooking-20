@@ -117,12 +117,10 @@
     mapPinMain.style.left = window.pin.START_COORDINATES.left + 'px';
     mapPinMain.style.top = window.pin.START_COORDINATES.top + 'px';
     inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
-
     removeCard();
     deletePins();
     mapPinMain.addEventListener('mousedown', buttonPress);
   };
-
 
   var errorTemplate = document.querySelector('#error')
     .content
@@ -158,24 +156,39 @@
     document.addEventListener('mousedown', removeErrorOnDocumentHandler);
     document.addEventListener('keydown', onEscPress);
   };
+  var pin = {
+    onTypeChange: function () {}
+  };
+  pin.onTypeChange = function (data) {
+    render(data);
+  };
+
+  var arrayLength = function (data) {
+    var lengthData;
+    if (data.length >= window.data.NUMBER_OF_PINS) {
+      lengthData = window.data.NUMBER_OF_PINS;
+    } else {
+      lengthData = data.length;
+    }
+    return lengthData;
+  };
 
   var render = function (data) {
     var fragmentPin = document.createDocumentFragment();
     document.querySelector('.map__pins').innerHTML = '';
-    for (var i = 0; i < window.data.NUMBER_OF_PINS; i++) {
+    for (var i = 0; i < arrayLength(data); i++) {
       fragmentPin.appendChild(window.pin.renderPin(data[i]));
     }
     document.querySelector('.map__pins').appendChild(fragmentPin);
+    var mapPin = mapPins.querySelectorAll('button:not(.map__pin--main)');
+    for (var j = 0; j < arrayLength(data); j++) {
+      onPinClick(mapPin[j], data[j]);
+    }
   };
 
   var successHandler = function (data) {
     loadedPins = data;
     render(data);
-
-    var mapPin = mapPins.querySelectorAll('button:not(.map__pin--main)');
-    for (var j = 0; j < window.data.NUMBER_OF_PINS; j++) {
-      onPinClick(mapPin[j], loadedPins[j]);
-    }
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     window.util.disableForm(mapFilters, false);
@@ -185,24 +198,27 @@
     adFormReset.addEventListener('click', pageReset);
     inputAddress.value = locationXMainPin + ', ' + locationYMainPin;
     mapPinMain.removeEventListener('mousedown', buttonPress);
+
   };
 
   var pageActive = function () {
     window.backend.load(successHandler, errorHandler);
   };
 
-  selectHouseType.addEventListener('change', function () {
-    console.log(selectHouseType.value);
-    loadedPins.forEach((element) => {
-
-      if (element.offer.type !== selectHouseType.value) {
-        loadedPins = Array.from(element).slice();
-
-        console.log(loadedPins);
-      }
-    })
-    render(loadedPins);
-  });
+  var onChangeHandler = function () {
+    var value = selectHouseType.value;
+    if (value === 'any') {
+      return successHandler(loadedPins);
+    }
+    var newArr = loadedPins.filter(function (element) {
+      return element.offer.type === value;
+    }).map(function (element) {
+      return element;
+    });
+    removeCard();
+    return pin.onTypeChange(newArr);
+  };
+  selectHouseType.addEventListener('change', onChangeHandler);
 
   var form = document.querySelector('.ad-form');
 

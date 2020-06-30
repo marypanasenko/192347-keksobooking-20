@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-  var NUMBER_OF_PINS = 10;
+  var NUMBER_OF_PINS = 5;
 
   var offerTypeAndPrice = {
     flat: {
