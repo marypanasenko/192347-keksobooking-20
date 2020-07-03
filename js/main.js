@@ -169,14 +169,17 @@
   var render = function (data) {
     var lengthData = data.length >= window.data.NUMBER_OF_PINS ? window.data.NUMBER_OF_PINS : data.length;
     var fragmentPin = document.createDocumentFragment();
-    document.querySelector('.map__pins').innerHTML = '';
+    var pinsNode = mapPins.querySelectorAll('button:not(.map__pin--main)');
+    pinsNode.forEach(function (element) {
+      element.remove();
+    });
     for (var i = 0; i < lengthData; i++) {
       fragmentPin.appendChild(window.pin.renderPin(data[i]));
     }
     document.querySelector('.map__pins').appendChild(fragmentPin);
-    var mapPin = mapPins.querySelectorAll('button:not(.map__pin--main)');
+    var renderedPins = mapPins.querySelectorAll('button:not(.map__pin--main)');
     for (var j = 0; j < lengthData; j++) {
-      onPinClick(mapPin[j], data[j]);
+      onPinClick(renderedPins[j], data[j]);
     }
   };
 
@@ -233,13 +236,13 @@
       if (housePrice !== ANY) {
         var elementPrice = element.offer.price.toString();
         var price;
-        if (elementPrice < window.data.price.low.max) {
+        if (elementPrice < window.data.price.min) {
           price = HousePriceValue.LOW;
         }
-        if (elementPrice > window.data.price.high.min) {
+        if (elementPrice > window.data.price.max) {
           price = HousePriceValue.HIGH;
         }
-        if (elementPrice < window.data.price.middle.max && elementPrice > window.data.price.middle.min) {
+        if (elementPrice < window.data.price.max && elementPrice > window.data.price.min) {
           price = HousePriceValue.MIDDLE;
         }
         isPrice = price === housePrice;

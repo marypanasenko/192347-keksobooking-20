@@ -21,16 +21,8 @@
     }
   };
   var price = {
-    middle: {
-      min: 10000,
-      max: 50000
-    },
-    low: {
-      max: 10000
-    },
-    high: {
-      min: 50000
-    }
+    min: 10000,
+    max: 50000
   };
   window.data = {
     offerTypeAndPrice: offerTypeAndPrice,
