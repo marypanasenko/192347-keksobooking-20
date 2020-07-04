@@ -20,8 +20,13 @@
       'price': 10000
     }
   };
+  var price = {
+    min: 10000,
+    max: 50000
+  };
   window.data = {
     offerTypeAndPrice: offerTypeAndPrice,
-    NUMBER_OF_PINS: NUMBER_OF_PINS
+    NUMBER_OF_PINS: NUMBER_OF_PINS,
+    price: price
   };
 })();
