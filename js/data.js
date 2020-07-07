@@ -1,6 +1,7 @@
 'use strict';
 (function () {
   var NUMBER_OF_PINS = 5;
+  var loadedPins = [];
 
   var offerTypeAndPrice = {
     flat: {
@@ -27,6 +28,7 @@
   window.data = {
     offerTypeAndPrice: offerTypeAndPrice,
     NUMBER_OF_PINS: NUMBER_OF_PINS,
-    price: price
+    price: price,
+    loadedPins: loadedPins
   };
 })();

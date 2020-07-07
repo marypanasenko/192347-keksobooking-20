@@ -7,6 +7,13 @@
   var inputPrice = document.querySelector('#price');
   var inputType = document.querySelector('#type');
 
+  var mapFilters = document.querySelector('.map__filters');
+  var adForm = document.querySelector('.ad-form');
+  var adFormReset = document.querySelector('.ad-form__reset');
+
+  window.util.disableForm(mapFilters, true);
+  window.util.disableForm(adForm, true);
+
   var onRoomsForGuestsValidationCheck = function (listenedElement, element) {
     listenedElement.addEventListener('change', function () {
       var rooms = roomNumber.value;
@@ -43,6 +50,66 @@
   inputTimeIn.addEventListener('change', onTimeInForTimeOutValidationCheck);
   inputTimeOut.addEventListener('change', onTimeOutForTimeInValidationCheck);
 
+  var pageReset = function () {
+    adFormReset.removeEventListener('click', pageReset);
+    window.card.map.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
+    window.util.disableForm(mapFilters, true);
+    window.util.disableForm(adForm, true);
+    adForm.reset();
+    mapFilters.reset();
+
+    window.pinMain.mapPinMain.style.left = window.pin.START_COORDINATES.left + 'px';
+    window.pinMain.mapPinMain.style.top = window.pin.START_COORDINATES.top + 'px';
+    window.pinMain.inputAddress.value = window.pinMain.locationXMainPin + ', ' + window.pinMain.locationYMainPin;
+    window.card.removeCard();
+    window.util.deletePins();
+    window.pinMain.mapPinMain.addEventListener('mousedown', window.util.buttonPress);
+  };
+
+  var successTemplate = document.querySelector('#success')
+    .content
+    .querySelector('.success');
+
+  var formMessage = function () {
+    var successElement = successTemplate.cloneNode(true);
+    document.querySelector('main').appendChild(successElement);
+
+    var successPopup = document.querySelector('.success');
+    var successPopupMessage = document.querySelector('.success__message');
+
+    var removeSuccessPopupOnDocumentHandler = function (evt) {
+      if (evt.target !== successPopupMessage) {
+        successPopup.remove();
+        document.removeEventListener('mousedown', removeSuccessPopupOnDocumentHandler);
+      }
+    };
+    var onEscPress = function (evt) {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        successPopup.remove();
+        document.removeEventListener('keydown', onEscPress);
+      }
+    };
+    document.addEventListener('mousedown', removeSuccessPopupOnDocumentHandler);
+    document.addEventListener('keydown', onEscPress);
+  };
+
+  var form = document.querySelector('.ad-form');
+
+  var submitHandler = function (evt) {
+    window.backend.save(new FormData(form), function () {
+      pageReset();
+      formMessage();
+
+    }, window.error.errorHandler);
+    evt.preventDefault();
+  };
+
+  form.addEventListener('submit', submitHandler);
+  window.photoPreview('.ad-form__field input[type=file]', '.ad-form-header__preview img');
+  window.photoPreview('.ad-form__upload input[type=file]', '.ad-form__photo');
+
   window.form = {
     onRoomsForGuestsValidationCheck: onRoomsForGuestsValidationCheck,
     onPriceForTypeValidationCheck: onPriceForTypeValidationCheck,
@@ -50,8 +117,10 @@
     capacityGuests: capacityGuests,
     inputPrice: inputPrice,
     inputType: inputType,
+    adFormReset: adFormReset,
+    pageReset: pageReset,
+    adForm: adForm,
+    mapFilters: mapFilters
   };
-
-
 })();
 

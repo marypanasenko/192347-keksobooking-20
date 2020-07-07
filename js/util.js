@@ -44,13 +44,28 @@
       }, DEBOUNCE_INTERVAL);
     };
   };
+  var mapPins = document.querySelector('.map__pins');
+  var deletePins = function () {
+    var mapPin = mapPins.querySelectorAll('button:not(.map__pin--main)');
+    for (var j = 0; j < mapPin.length; j++) {
+      mapPin[j].remove();
+    }
+  };
+  var buttonPress = function (e) {
+    if (e.button === 0) {
+      window.main.pageActive();
+    }
+  };
 
   window.util = {
     getRandomIntInclusive: getRandomIntInclusive,
     getRandomStringElement: getRandomStringElement,
     shuffleArray: shuffleArray,
     disableForm: disableForm,
-    debounce: debounce
+    debounce: debounce,
+    deletePins: deletePins,
+    mapPins: mapPins,
+    buttonPress: buttonPress
   };
 })();
 
