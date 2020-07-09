@@ -58,7 +58,7 @@
     window.util.disableForm(adForm, true);
     adForm.reset();
     mapFilters.reset();
-
+    window.photoPreview.photoPreviewReset();
     window.pinMain.mapPinMain.style.left = window.pin.START_COORDINATES.left + 'px';
     window.pinMain.mapPinMain.style.top = window.pin.START_COORDINATES.top + 'px';
     window.pinMain.inputAddress.value = window.pinMain.locationXMainPin + ', ' + window.pinMain.locationYMainPin;
@@ -107,8 +107,8 @@
   };
 
   form.addEventListener('submit', submitHandler);
-  window.photoPreview('.ad-form__field input[type=file]', '.ad-form-header__preview img');
-  window.photoPreview('.ad-form__upload input[type=file]', '.ad-form__photo');
+  window.photoPreview.photoPreview('.ad-form__field input[type=file]', '.ad-form-header__preview img');
+  window.photoPreview.photoPreview('.ad-form__upload input[type=file]', '.ad-form__photo');
 
   window.form = {
     onRoomsForGuestsValidationCheck: onRoomsForGuestsValidationCheck,
