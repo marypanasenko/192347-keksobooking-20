@@ -39,8 +39,47 @@
 
     return cardElement;
   };
+
+  var onCardEscPress = function (evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      removeCard();
+    }
+  };
+  var removeCard = function () {
+    var card = document.querySelector('.map__card');
+    var pinActive = document.querySelector('.map__pin--active');
+    if (pinActive) {
+      pinActive.classList.remove('map__pin--active');
+    }
+    if (card) {
+      card.remove();
+    }
+    document.removeEventListener('keydown', onCardEscPress);
+  };
+  var map = document.querySelector('.map');
+  var onPinClick = function (pinOnMap, array) {
+    pinOnMap.addEventListener('click', function () {
+      removeCard();
+      pinOnMap.classList.add('map__pin--active');
+      var newCard = (window.card.renderCard(array));
+      var mapFiltersContainer = document.querySelector('.map__filters-container');
+      map.insertBefore(newCard, mapFiltersContainer);
+
+      var popupClose = document.querySelector('.popup__close');
+
+      popupClose.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        removeCard();
+      });
+      document.addEventListener('keydown', onCardEscPress);
+    });
+  };
   window.card = {
-    renderCard: renderCard
+    renderCard: renderCard,
+    onPinClick: onPinClick,
+    map: map,
+    removeCard: removeCard
   };
 })();
 
