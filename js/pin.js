@@ -11,13 +11,12 @@
     .content
     .querySelector('.map__pin');
 
-  var renderPin = function (array) {
+  var renderPin = function (object) {
     var pinElement = pinTemplate.cloneNode(true);
-
-    pinElement.querySelector('img').src = array.author.avatar;
-    pinElement.querySelector('img').alt = array.offer.title;
-    pinElement.style.left = array.location.x - PIN_WIDTH / 2 + 'px';
-    pinElement.style.top = array.location.y - PIN_HEIGHT + 'px';
+    pinElement.querySelector('img').src = object.author.avatar;
+    pinElement.querySelector('img').alt = object.offer.title;
+    pinElement.style.left = object.location.x - PIN_WIDTH / 2 + 'px';
+    pinElement.style.top = object.location.y - PIN_HEIGHT + 'px';
 
     return pinElement;
   };

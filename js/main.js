@@ -1,8 +1,6 @@
 'use strict';
 (function () {
-
   window.pinMain.mapPinMain.addEventListener('mousedown', window.util.buttonPressHandler, false);
-
   window.pinMain.mapPinMain.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter') {
       pageActive();
@@ -10,12 +8,19 @@
   });
 
   var renderPins = function (data) {
-    var lengthData = data.length >= window.data.NUMBER_OF_PINS ? window.data.NUMBER_OF_PINS : data.length;
+
     var fragmentPin = document.createDocumentFragment();
     var pinsNode = window.util.mapPins.querySelectorAll('button:not(.map__pin--main)');
     pinsNode.forEach(function (element) {
       element.remove();
     });
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].offer === 0) {
+        data[i].remove();
+      }
+    }
+    var lengthData = data.length >= window.data.NUMBER_OF_PINS ? window.data.NUMBER_OF_PINS : data.length;
+
     for (var i = 0; i < lengthData; i++) {
       fragmentPin.appendChild(window.pin.renderPin(data[i]));
     }
