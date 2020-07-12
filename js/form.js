@@ -14,7 +14,7 @@
   window.util.disableForm(mapFilters, true);
   window.util.disableForm(adForm, true);
 
-  var onRoomsForGuestsValidationCheck = function (listenedElement, element) {
+  var roomsForGuestsCheckHandler = function (listenedElement, element) {
     listenedElement.addEventListener('change', function () {
       var rooms = roomNumber.value;
       var guests = capacityGuests.value;
@@ -32,26 +32,26 @@
     });
   };
 
-  var onPriceForTypeValidationCheck = function () {
+  var priceForTypeCheckHandler = function () {
     inputPrice.min = window.data.offerTypeAndPrice[inputType.value].price;
     inputPrice.placeholder = window.data.offerTypeAndPrice[inputType.value].price;
   };
-  inputType.addEventListener('change', onPriceForTypeValidationCheck);
+  inputType.addEventListener('change', priceForTypeCheckHandler);
 
   var inputTimeIn = document.querySelector('#timein');
   var inputTimeOut = document.querySelector('#timeout');
 
-  var onTimeInForTimeOutValidationCheck = function () {
+  var timeInForTimeOutCheckHandler = function () {
     inputTimeOut.value = inputTimeIn.value;
   };
-  var onTimeOutForTimeInValidationCheck = function () {
+  var timeOutForTimeInCheckHandler = function () {
     inputTimeIn.value = inputTimeOut.value;
   };
-  inputTimeIn.addEventListener('change', onTimeInForTimeOutValidationCheck);
-  inputTimeOut.addEventListener('change', onTimeOutForTimeInValidationCheck);
+  inputTimeIn.addEventListener('change', timeInForTimeOutCheckHandler);
+  inputTimeOut.addEventListener('change', timeOutForTimeInCheckHandler);
 
-  var pageReset = function () {
-    adFormReset.removeEventListener('click', pageReset);
+  var pageResetHandler = function () {
+    adFormReset.removeEventListener('click', pageResetHandler);
     window.card.map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
     window.util.disableForm(mapFilters, true);
@@ -59,12 +59,13 @@
     adForm.reset();
     mapFilters.reset();
     window.photoPreview.photoPreviewReset();
-    window.pinMain.mapPinMain.style.left = window.pin.START_COORDINATES.left + 'px';
-    window.pinMain.mapPinMain.style.top = window.pin.START_COORDINATES.top + 'px';
+    window.pinMain.mapPinMain.style.left = window.pin.StartCoordinate.LEFT + 'px';
+    window.pinMain.mapPinMain.style.top = window.pin.StartCoordinate.TOP + 'px';
     window.pinMain.inputAddress.value = window.pinMain.locationXMainPin + ', ' + window.pinMain.locationYMainPin;
     window.card.removeCard();
     window.util.deletePins();
-    window.pinMain.mapPinMain.addEventListener('mousedown', window.util.buttonPress);
+    window.form.mapFilters.removeEventListener('change', window.filter.onChangeHandler);
+    window.pinMain.mapPinMain.addEventListener('mousedown', window.util.buttonPressHandler);
   };
 
   var successTemplate = document.querySelector('#success')
@@ -78,28 +79,24 @@
     var successPopup = document.querySelector('.success');
     var successPopupMessage = document.querySelector('.success__message');
 
-    var removeSuccessPopupOnDocumentHandler = function (evt) {
+    var successPopupOnDocumentRemoveHandler = function (evt) {
       if (evt.target !== successPopupMessage) {
         successPopup.remove();
-        document.removeEventListener('mousedown', removeSuccessPopupOnDocumentHandler);
+        document.removeEventListener('mousedown', successPopupOnDocumentRemoveHandler);
       }
     };
-    var onEscPress = function (evt) {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        successPopup.remove();
-        document.removeEventListener('keydown', onEscPress);
-      }
-    };
-    document.addEventListener('mousedown', removeSuccessPopupOnDocumentHandler);
-    document.addEventListener('keydown', onEscPress);
+
+    document.addEventListener('mousedown', successPopupOnDocumentRemoveHandler);
+    document.addEventListener('keydown', function (evt) {
+      window.util.escPressHandler(evt, successPopup);
+    });
   };
 
   var form = document.querySelector('.ad-form');
 
   var submitHandler = function (evt) {
     window.backend.save(new FormData(form), function () {
-      pageReset();
+      pageResetHandler();
       formMessage();
 
     }, window.error.errorHandler);
@@ -111,14 +108,13 @@
   window.photoPreview.photoPreview('.ad-form__upload input[type=file]', '.ad-form__photo');
 
   window.form = {
-    onRoomsForGuestsValidationCheck: onRoomsForGuestsValidationCheck,
-    onPriceForTypeValidationCheck: onPriceForTypeValidationCheck,
+    roomsForGuestsCheckHandler: roomsForGuestsCheckHandler,
     roomNumber: roomNumber,
     capacityGuests: capacityGuests,
     inputPrice: inputPrice,
     inputType: inputType,
     adFormReset: adFormReset,
-    pageReset: pageReset,
+    pageResetHandler: pageResetHandler,
     adForm: adForm,
     mapFilters: mapFilters
   };

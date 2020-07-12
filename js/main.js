@@ -1,7 +1,7 @@
 'use strict';
 (function () {
 
-  window.pinMain.mapPinMain.addEventListener('mousedown', window.util.buttonPress, false);
+  window.pinMain.mapPinMain.addEventListener('mousedown', window.util.buttonPressHandler, false);
 
   window.pinMain.mapPinMain.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter') {
@@ -9,7 +9,7 @@
     }
   });
 
-  var render = function (data) {
+  var renderPins = function (data) {
     var lengthData = data.length >= window.data.NUMBER_OF_PINS ? window.data.NUMBER_OF_PINS : data.length;
     var fragmentPin = document.createDocumentFragment();
     var pinsNode = window.util.mapPins.querySelectorAll('button:not(.map__pin--main)');
@@ -28,16 +28,16 @@
 
   var successHandler = function (data) {
     window.data.loadedPins = data;
-    render(data);
+    renderPins(data);
     window.card.map.classList.remove('map--faded');
     window.form.adForm.classList.remove('ad-form--disabled');
     window.util.disableForm(window.form.mapFilters, false);
     window.util.disableForm(window.form.adForm, false);
-    window.form.onRoomsForGuestsValidationCheck(window.form.roomNumber, window.form.capacityGuests);
-    window.form.onRoomsForGuestsValidationCheck(window.form.capacityGuests, window.form.roomNumber);
-    window.form.adFormReset.addEventListener('click', window.form.pageReset);
+    window.form.roomsForGuestsCheckHandler(window.form.roomNumber, window.form.capacityGuests);
+    window.form.roomsForGuestsCheckHandler(window.form.capacityGuests, window.form.roomNumber);
+    window.form.adFormReset.addEventListener('click', window.form.pageResetHandler);
     window.pinMain.inputAddress.value = window.pinMain.locationXMainPin + ', ' + window.pinMain.locationYMainPin;
-    window.pinMain.mapPinMain.removeEventListener('mousedown', window.util.buttonPress);
+    window.pinMain.mapPinMain.removeEventListener('mousedown', window.util.buttonPressHandler);
     window.form.mapFilters.addEventListener('change', window.filter.onChangeHandler);
   };
 
@@ -46,7 +46,7 @@
   };
 
   window.main = {
-    render: render,
+    renderPins: renderPins,
     pageActive: pageActive
   };
 })();

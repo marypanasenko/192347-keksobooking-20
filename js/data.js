@@ -25,10 +25,22 @@
     min: 10000,
     max: 50000
   };
+  var pinLocation = {
+    x: {
+      min: 0,
+      max: 1200
+    },
+    y: {
+      min: 130,
+      max: 630
+    }
+  };
+
   window.data = {
     offerTypeAndPrice: offerTypeAndPrice,
     NUMBER_OF_PINS: NUMBER_OF_PINS,
     price: price,
-    loadedPins: loadedPins
+    loadedPins: loadedPins,
+    pinLocation: pinLocation
   };
 })();

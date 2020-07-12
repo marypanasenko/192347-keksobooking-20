@@ -59,7 +59,7 @@
       }
       return isType && isRooms && isGuests && isPrice && isFeatures;
     };
-    window.main.render(window.data.loadedPins.filter(filteredArray));
+    window.main.renderPins(window.data.loadedPins.filter(filteredArray));
     window.card.removeCard();
   });
   window.filter = {

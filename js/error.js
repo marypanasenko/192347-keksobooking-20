@@ -12,27 +12,23 @@
     var errorPopup = document.querySelector('.error');
     var errorButton = document.querySelector('.error__button');
 
-    var removeErrorOnButtonHandler = function () {
+    var buttonErrorCloseHandler = function () {
       errorPopup.remove();
-      document.removeEventListener('mousedown', removeErrorOnButtonHandler);
+      document.removeEventListener('mousedown', buttonErrorCloseHandler);
     };
 
-    var removeErrorOnDocumentHandler = function (evt) {
+    var buttonErrorOnDocumentCloseHandler = function (evt) {
       if (evt.target !== errorButton) {
         errorPopup.remove();
-        document.removeEventListener('mousedown', removeErrorOnDocumentHandler);
+        document.removeEventListener('mousedown', buttonErrorOnDocumentCloseHandler);
       }
     };
-    var onEscPress = function (evt) {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        errorPopup.remove();
-        document.removeEventListener('keydown', onEscPress);
-      }
-    };
-    errorButton.addEventListener('mousedown', removeErrorOnButtonHandler);
-    document.addEventListener('mousedown', removeErrorOnDocumentHandler);
-    document.addEventListener('keydown', onEscPress);
+
+    errorButton.addEventListener('mousedown', buttonErrorCloseHandler);
+    document.addEventListener('mousedown', buttonErrorOnDocumentCloseHandler);
+    document.addEventListener('keydown', function (evt) {
+      window.util.escPressHandler(evt, errorPopup);
+    });
   };
   window.error = {
     errorHandler: errorHandler

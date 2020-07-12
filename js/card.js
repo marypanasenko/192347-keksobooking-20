@@ -40,7 +40,7 @@
     return cardElement;
   };
 
-  var onCardEscPress = function (evt) {
+  var cardEscHandler = function (evt) {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       removeCard();
@@ -55,7 +55,7 @@
     if (card) {
       card.remove();
     }
-    document.removeEventListener('keydown', onCardEscPress);
+    document.removeEventListener('keydown', cardEscHandler);
   };
   var map = document.querySelector('.map');
   var onPinClick = function (pinOnMap, array) {
@@ -72,7 +72,7 @@
         evt.preventDefault();
         removeCard();
       });
-      document.addEventListener('keydown', onCardEscPress);
+      document.addEventListener('keydown', cardEscHandler);
     });
   };
   window.card = {

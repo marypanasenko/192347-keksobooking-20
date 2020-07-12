@@ -24,7 +24,7 @@
         y: evt.clientY
       };
 
-      var onMouseMove = function (moveEvt) {
+      var mouseMoveHandler = function (moveEvt) {
         moveEvt.preventDefault();
 
         var shift = {
@@ -41,15 +41,15 @@
         var pinY = mapPinMain.offsetTop - shift.y;
 
 
-        if (pinX > window.pin.pin.x.max - pinAddWidth) {
-          pinX = window.pin.pin.x.max - pinAddWidth;
-        } else if (pinX < window.pin.pin.x.min - pinAddWidth) {
-          pinX = window.pin.pin.x.min - pinAddWidth;
+        if (pinX > window.data.pinLocation.x.max - pinAddWidth) {
+          pinX = window.data.pinLocation.x.max - pinAddWidth;
+        } else if (pinX < window.data.pinLocation.x.min - pinAddWidth) {
+          pinX = window.data.pinLocation.x.min - pinAddWidth;
         }
-        if (pinY > window.pin.pin.y.max - pinAddHeight) {
-          pinY = window.pin.pin.y.max - pinAddHeight;
-        } else if (pinY < window.pin.pin.y.min - pinAddHeight) {
-          pinY = window.pin.pin.y.min - pinAddHeight;
+        if (pinY > window.data.pinLocation.y.max - pinAddHeight) {
+          pinY = window.data.pinLocation.y.max - pinAddHeight;
+        } else if (pinY < window.data.pinLocation.y.min - pinAddHeight) {
+          pinY = window.data.pinLocation.y.min - pinAddHeight;
         }
 
         mapPinMain.style.top = pinY + 'px';
@@ -58,14 +58,14 @@
         inputAddress.value = ((pinX + pinAddWidth) + ', ' + (pinY + pinAddHeight));
 
       };
-      var onMouseUp = function (upEvt) {
+      var mouseUpHandler = function (upEvt) {
         upEvt.preventDefault();
 
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        document.removeEventListener('mouseup', mouseUpHandler);
       };
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+      document.addEventListener('mousemove', mouseMoveHandler);
+      document.addEventListener('mouseup', mouseUpHandler);
     }
   });
 

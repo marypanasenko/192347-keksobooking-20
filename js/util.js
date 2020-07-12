@@ -51,11 +51,19 @@
       mapPin[j].remove();
     }
   };
-  var buttonPress = function (e) {
+  var buttonPressHandler = function (e) {
     if (e.button === 0) {
       window.main.pageActive();
     }
   };
+  var escPressHandler = function (evt, closedElement) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      closedElement.remove();
+      document.removeEventListener('keydown', escPressHandler);
+    }
+  };
+
 
   window.util = {
     getRandomIntInclusive: getRandomIntInclusive,
@@ -65,7 +73,8 @@
     debounce: debounce,
     deletePins: deletePins,
     mapPins: mapPins,
-    buttonPress: buttonPress
+    buttonPressHandler: buttonPressHandler,
+    escPressHandler: escPressHandler
   };
 })();
 
