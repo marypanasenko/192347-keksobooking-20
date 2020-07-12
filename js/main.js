@@ -14,9 +14,9 @@
     pinsNode.forEach(function (element) {
       element.remove();
     });
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].offer === 0) {
-        data[i].remove();
+    for (var k = 0; k < data.length; k++) {
+      if (data[k].offer === 0) {
+        data[k].remove();
       }
     }
     var lengthData = data.length >= window.data.NUMBER_OF_PINS ? window.data.NUMBER_OF_PINS : data.length;
