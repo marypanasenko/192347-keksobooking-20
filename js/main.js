@@ -26,9 +26,8 @@
       window.card.onPinClick(renderedPins[j], data[j]);
     }
   };
-
+  var pinsData = [];
   var successHandler = function (data) {
-    var pinsData = [];
     for (var k = 0; k < data.length; k++) {
       if (data[k].offer === 0) {
         data[k].remove();
