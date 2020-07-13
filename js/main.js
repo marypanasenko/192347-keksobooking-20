@@ -14,11 +14,7 @@
     pinsNode.forEach(function (element) {
       element.remove();
     });
-    for (var k = 0; k < data.length; k++) {
-      if (data[k].offer === 0) {
-        data[k].remove();
-      }
-    }
+
     var lengthData = data.length >= window.data.NUMBER_OF_PINS ? window.data.NUMBER_OF_PINS : data.length;
 
     for (var i = 0; i < lengthData; i++) {
@@ -32,8 +28,15 @@
   };
 
   var successHandler = function (data) {
-    window.data.loadedPins = data;
-    renderPins(data);
+    var pinsData = [];
+    for (var k = 0; k < data.length; k++) {
+      if (data[k].offer === 0) {
+        data[k].remove();
+      }
+      pinsData = data;
+    }
+    window.data.loadedPins = pinsData;
+    renderPins(pinsData);
     window.card.map.classList.remove('map--faded');
     window.form.adForm.classList.remove('ad-form--disabled');
     window.util.disableForm(window.form.mapFilters, false);
